@@ -11,7 +11,7 @@ public class LoadSceneScript : MonoBehaviour {
     private void Awake()
     {
         Application.runInBackground = true;
-        OnMinimizeButtonClick();
+       // OnMinimizeButtonClick();
     }
 
     void Start () {
