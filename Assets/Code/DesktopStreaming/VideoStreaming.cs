@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using System;
 
 public class VideoStreaming : MonoBehaviour {
 
@@ -24,12 +25,16 @@ public class VideoStreaming : MonoBehaviour {
     private bool frameReadyToSend;
     private string lastFrameURL;
 
+    private IntPtr texPointer;
+    private Texture2D tex;
+
     private void Awake()
     {
         if (!ApplicationStaticData.IsSuperUser())
         {
             GetComponent<Video>().enabled = false;
         }
+        
     }
 
     private void Start()
@@ -38,6 +43,8 @@ public class VideoStreaming : MonoBehaviour {
         //InitFirebase();
 
         InitResolution();
+        tex = new Texture2D(resolutionWidth, resolutionWidth);
+        
     }
 
     private void InitResolution()
@@ -71,6 +78,7 @@ public class VideoStreaming : MonoBehaviour {
             streaming = true;
             Thread th = new Thread(SendNewTexture);
             th.Start();
+            //SendNewTexture();
         }
     }
 
