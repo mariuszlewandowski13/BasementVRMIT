@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1037850346775",
+    "firebase_url": "https://cloudstories-7de0a.firebaseio.com",
+    "project_id": "cloudstories-7de0a",
+    "storage_bucket": "cloudstories-7de0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037850346775:android:544b35bef5ee0f9d",
+        "android_client_info": {
+          "package_name": "com.MixedReality.BasementVR"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037850346775-2sfd932b5cr7tec7c1a32gqovi50cq55.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm81gMcL2qLyWVr5hoLIzsIY6rNrpwBII"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

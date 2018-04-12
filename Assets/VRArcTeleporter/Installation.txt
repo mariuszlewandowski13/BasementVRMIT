@@ -1,0 +1,20 @@
+Installation:
+
+Step 1:
+Download/Import
+SteamVR (https://assetstore.unity.com/packages/templates/systems/steamvr-plugin-32647)
+and/or
+Oculus Integration (https://assetstore.unity.com/packages/tools/integration/oculus-integration-82022)
+
+SteamVR only (Supports Vive and Oculus):
+Step 2: Delete VRInputOculus.cs and VRInputOculusEditor.cs.
+Step 3: Open VRInputOculusBlank.cs and remove the "/*" and "*/" at the top and bottom to uncomment.
+Step 4: Read the Readme and open ExampleScene.
+
+Oculus integration only (Supports Oculus):
+Step 2: Delete VRInput.cs and VRInputEditor.cs.
+Step 3: Open VRInputBlank.cs and remove "/* and "*/" at the top and bottom to uncomment.
+Step 4: Read the Readme and open ExampleSceneOculus.
+
+Both SteamVR and Oculus Integration:
+Step 2: Read the Readme and open ExampleScene for SteamVR rig or ExampleSceneOculus for Oculus rig.
