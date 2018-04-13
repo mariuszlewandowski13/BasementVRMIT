@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: ZFS_3D_Pro
+  m_Shader: {fileID: 4800000, guid: f75d07a8e7593ab40ba4565d1db59f37, type: 3}
+  m_ShaderKeywords: _EDGE_DETECTION_FAKE_ON _EDGE_OR_CENTER_FRESNEL_ON _FRESNEL_ON
+    _MAKE_SAME_AS_FRESNEL_ON _MAKE_SAME_AS_MASK_ON _MASK_ON
+  m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Gradient_Color:
+        m_Texture: {fileID: 2800000, guid: 571fcc38fa07d134fac762c1112e1810, type: 3}
+        m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 0, y: 0}
+    - _Gradient_Edge_Detection:
+        m_Texture: {fileID: 2800000, guid: a95cd61354f0f794ab21bc0e7e905dbc, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _Gradient_Edge_Fake:
+        m_Texture: {fileID: 2800000, guid: 595df77cdf0a1b64a9da15f136642fb4, type: 3}
+        m_Scale: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0}
+    - _Gradient_Texture_Decay:
+        m_Texture: {fileID: 2800000, guid: 595df77cdf0a1b64a9da15f136642fb4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask_Texture:
+        m_Texture: {fileID: 2800000, guid: 8dfd0e463a67dfe40b65fd5a0da410f6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture:
+        m_Texture: {fileID: 2800000, guid: 8dfd0e463a67dfe40b65fd5a0da410f6, type: 3}
+        m_Scale: {x: 6, y: 6}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Brightness: 1
+    - _Cutoff: 0.5
+    - _Decay: 0.1
+    - _Decay_V_Coordinate: 0.1
+    - _Edge_Detection: 0
+    - _Edge_Detection_Distance: 3
+    - _Edge_Detection_Fake: 0.2901961
+    - _Edge_Fake: 0
+    - _Edge_Or_Center_Fresnel: 1
+    - _Fresnel: 1
+    - _Fresnel_Exponent: 0.5
+    - _Gradient_Color_Intensity: 1
+    - _Gradient_Or_Solid_Color: 0
+    - _Intensity: 1
+    - _Make_Same_As_Fresnel: 1
+    - _Make_Same_As_Mask: 1
+    - _Mask: 1
+    - _Pan_Speed: 0.7
+    - _Pan_SpeedX: 0.02
+    - _Pan_SpeedY: 0.04
+    - _Soft_Texture: 0
+    - _Soft_Textures: 0
+    - _Texture_Pan_Speed: 1
+    - _Transparency: 0.6
+    - _Transparent: 1
+    - _Value_Clamp_Maximum: 0.95
+    - _Value_Clamp_Minimum: 0
+    - _node_1948: 0
+    - _node_2056: 0.3
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Solid_Color: {r: 0.034439873, g: 0.35396746, b: 0.6691177, a: 1}
