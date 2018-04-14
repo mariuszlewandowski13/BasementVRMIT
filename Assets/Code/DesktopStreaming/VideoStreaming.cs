@@ -47,7 +47,7 @@ public class VideoStreaming : MonoBehaviour {
 
     private void Start()
     {
-        tex = new Texture2D(2, 2);
+        GetComponent<Renderer>().material.mainTexture = tex;
         uddTexture = GetComponent<uDesktopDuplication.Texture>();
         movieRenderer = GetComponent<Renderer>();
         //InitFirebase();
@@ -104,7 +104,7 @@ public class VideoStreaming : MonoBehaviour {
     void ProcessTextureBytes()
     {
         
-        SendTexture(Color32ArrayToByteArray(colors));
+        SendTexture(colors);
         frameReadyToSend = false;
         streaming = false;
 
@@ -128,8 +128,6 @@ public class VideoStreaming : MonoBehaviour {
             {
             frameReadyToSend = true;
             }
-
-
     }
 
 
@@ -154,26 +152,24 @@ public class VideoStreaming : MonoBehaviour {
 
         Debug.Log(Time.time);
 
-        
-        tex.LoadImage(textureBytes);
 
-        movieRenderer.material.mainTexture = tex;
-        movieRenderer.material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+        tex.SetPixels32(colors);
+        tex.Apply();
         frameReady = false;
     }
 
     [PunRPC]
-    public void LoadNewTexture(byte [] tex)
+    public void LoadNewTexture(Color32 [] tex)
     {
         if (!frameReady)
         {
-            textureBytes = tex;
+            colors = tex;
             frameReady = true;
         }
         
     }
 
-    public void SendTexture(byte[] tex)
+    public void SendTexture(Color32[] tex)
     {
 
         if (lastSendingTime + 0.5f < Time.time)
@@ -187,31 +183,5 @@ public class VideoStreaming : MonoBehaviour {
             }
         }
     }
-
-    private static byte[] Color32ArrayToByteArray(Color32[] colors)
-    {
-        if (colors == null || colors.Length == 0)
-            return null;
-
-        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
-        int length = lengthOfColor32 * colors.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
-    }
-
 
 }
