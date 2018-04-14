@@ -19,6 +19,9 @@ public class Client : MonoBehaviour
 
     byte[] bytesToRec = new byte[1024];
 
+    private bool streaming;
+
+    private bool frameToSend;
 
     private bool frameReady;
     private void Start()
@@ -90,7 +93,24 @@ public class Client : MonoBehaviour
 
     void SendFrame()
     {
+        if (!streaming && frameToSend)
+        {
+            streaming = true;
+            Thread th = new Thread(SendAsync);
+            th.Start();
+        }
+        else {
+            frameToSend = true;
+        }
+    }
 
+    void SendAsync()
+    {
+        byte [] length = Encoding.Default.GetBytes(bytesToRec.Length.ToString());
+        sender.Send(length);
+        sender.Send(bytesToRec);
+        streaming = false;
+        frameToSend = false;
     }
 
 

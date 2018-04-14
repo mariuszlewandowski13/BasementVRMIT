@@ -52,7 +52,7 @@ public static class ApplicationStaticData {
     static public string userImagesPath = Application.dataPath + "/media/upload/";
     static public string screenshotsPath = Application.dataPath + "/media/screenshots/";
 #endif
-    static public UserType userType = UserType.student;
+    static public UserType userType = UserType.teacher;
     static public string idFilePath = Application.dataPath + "/login.txt";
 #endregion
 
