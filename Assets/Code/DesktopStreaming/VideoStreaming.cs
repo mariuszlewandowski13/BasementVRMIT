@@ -1,20 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Threading;
 using System;
+using System.Runtime.InteropServices;
 
 public class VideoStreaming : MonoBehaviour {
 
+    private uDesktopDuplication.Texture uddTexture;
+
+    int x = 100;
+    int y = 100;
+    const int width = 64;
+    const int height = 32;
+
+    Color32[] colors = new Color32[width * height];
+
+    byte[] textureBytes;
 
     private bool streaming;
 
     private Renderer movieRenderer;
-
-    private byte [] textureBytes = new byte [100000] ;
 
     private int fileCounter = 0;
 
@@ -28,17 +34,21 @@ public class VideoStreaming : MonoBehaviour {
     private IntPtr texPointer;
     private Texture2D tex;
 
+    private float lastSendingTime = 0.0f;
+
     private void Awake()
     {
         if (!ApplicationStaticData.IsSuperUser())
         {
-            GetComponent<Video>().enabled = false;
+            GetComponent<uDesktopDuplication.Texture>().enabled = false;
         }
         
     }
 
     private void Start()
     {
+        tex = new Texture2D(2, 2);
+        uddTexture = GetComponent<uDesktopDuplication.Texture>();
         movieRenderer = GetComponent<Renderer>();
         //InitFirebase();
 
@@ -85,11 +95,7 @@ public class VideoStreaming : MonoBehaviour {
     void SendNewTexture()
     {
         GetNewFrame();
-        if (textureBytes != null && textureBytes.Length > 0)
-        {
-            frameReadyToSend = true;
-        }
-        else
+        if (!frameReadyToSend)
         {
             streaming = false;
         }
@@ -97,8 +103,9 @@ public class VideoStreaming : MonoBehaviour {
 
     void ProcessTextureBytes()
     {
+        
+        SendTexture(Color32ArrayToByteArray(colors));
         frameReadyToSend = false;
-        SendTexture(textureBytes);
         streaming = false;
 
     }
@@ -112,22 +119,17 @@ public class VideoStreaming : MonoBehaviour {
 
     private void GetNewFrame()
     {
-        //var bmpScreenshot = new Bitmap(resolutionWidth,
-        //                               resolutionHeight,
-        //                               PixelFormat.Format32bppArgb);
-        //var gfxScreenshot = System.Drawing.Graphics.FromImage(bmpScreenshot);
-        //gfxScreenshot.CopyFromScreen(0,
-        //                            0,
-        //                            0,
-        //                            0,
-        //                            new Size(resolutionWidth, resolutionHeight),
-        //                            CopyPixelOperation.SourceCopy);
+            uDesktopDuplication.Manager.primary.useGetPixels = true;
 
-        // Save the screenshot to the specified path that the user has chosen.
-        //bmpScreenshot.Save("Screenshot.jpg", ImageFormat.Jpeg);
-        //bmpScreenshot.Dispose();
+            var monitor = uddTexture.monitor;
+            if (!monitor.hasBeenUpdated) return;
 
-        //textureBytes = File.ReadAllBytes("Screenshot.jpg");
+            if (monitor.GetPixels(colors, x, y, width, height))
+            {
+            frameReadyToSend = true;
+            }
+
+
     }
 
 
@@ -152,11 +154,11 @@ public class VideoStreaming : MonoBehaviour {
 
         Debug.Log(Time.time);
 
-        //Texture2D tex = new Texture2D(2, 2);
-        //tex.LoadImage(textureBytes);
         
-        //movieRenderer.material.mainTexture = tex;
-        //movieRenderer.material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+        tex.LoadImage(textureBytes);
+
+        movieRenderer.material.mainTexture = tex;
+        movieRenderer.material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         frameReady = false;
     }
 
@@ -173,12 +175,42 @@ public class VideoStreaming : MonoBehaviour {
 
     public void SendTexture(byte[] tex)
     {
-        Debug.Log(Time.time);
-        if (PhotonNetwork.inRoom)
+
+        if (lastSendingTime + 0.5f < Time.time)
         {
-            GetComponent<PhotonView>().RPC("LoadNewTexture", PhotonTargets.Others, tex);
+            lastSendingTime = Time.time;
+            if (PhotonNetwork.inRoom)
+            {
+                
+                Debug.Log(lastSendingTime);
+                GetComponent<PhotonView>().RPC("LoadNewTexture", PhotonTargets.Others, tex);
+            }
+        }
+    }
+
+    private static byte[] Color32ArrayToByteArray(Color32[] colors)
+    {
+        if (colors == null || colors.Length == 0)
+            return null;
+
+        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
+        int length = lengthOfColor32 * colors.Length;
+        byte[] bytes = new byte[length];
+
+        GCHandle handle = default(GCHandle);
+        try
+        {
+            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
+            IntPtr ptr = handle.AddrOfPinnedObject();
+            Marshal.Copy(ptr, bytes, 0, length);
+        }
+        finally
+        {
+            if (handle != default(GCHandle))
+                handle.Free();
         }
 
+        return bytes;
     }
 
 
