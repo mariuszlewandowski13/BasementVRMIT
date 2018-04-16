@@ -236,8 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d008c186fb5dc5f488e7f33ef30ea549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Display: {fileID: 8400000, guid: 3cd9e34c4a9d0984aa18a529d03f504f, type: 2}
+  plane: {fileID: 1849343695}
+  m_Display: {fileID: 8400000, guid: b60e855e4b96c9c459186742fff11eee, type: 2}
   fire: {fileID: 1411829883}
+  textureBytes: 
+  frameReady: 0
   streaming: 0
 --- !u!114 &668090889
 MonoBehaviour:
@@ -557,8 +560,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1406169689}
   - component: {fileID: 1406169688}
-  - component: {fileID: 1406169687}
-  - component: {fileID: 1406169686}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -566,20 +567,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1406169686
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1406169685}
-  m_Enabled: 1
---- !u!124 &1406169687
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1406169685}
-  m_Enabled: 1
 --- !u!20 &1406169688
 Camera:
   m_ObjectHideFlags: 0
@@ -588,13 +575,13 @@ Camera:
   m_GameObject: {fileID: 1406169685}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 0.29
+    width: 1
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
@@ -606,8 +593,8 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 3cd9e34c4a9d0984aa18a529d03f504f, type: 2}
-  m_TargetDisplay: 1
+  m_TargetTexture: {fileID: 8400000, guid: b60e855e4b96c9c459186742fff11eee, type: 2}
+  m_TargetDisplay: 0
   m_TargetEye: 0
   m_HDR: 1
   m_AllowMSAA: 1
@@ -1050,7 +1037,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c181d333a7bee7a44b94c0f4e02c4bd4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

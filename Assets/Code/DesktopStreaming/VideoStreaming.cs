@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 
 public class VideoStreaming : MonoBehaviour {
 
+    public GameObject plane;
+
     public RenderTexture m_Display;
     public firebaseManager fire;
 
@@ -38,13 +40,17 @@ public class VideoStreaming : MonoBehaviour {
         if (ApplicationStaticData.IsSuperUser())
         {
             InitResolution();
+            
         }
     }
 
     private void InitResolution()
     {
-        resolutionWidth = Screen.currentResolution.width-1;
-        resolutionHeight = Screen.currentResolution.height -1;
+        resolutionWidth = Screen.currentResolution.width/2;
+        resolutionHeight = Screen.currentResolution.height/2;
+        m_Display.width = resolutionWidth;
+        m_Display.height = resolutionHeight;
+
     }
 
 
@@ -69,6 +75,18 @@ public class VideoStreaming : MonoBehaviour {
         }
     }
 
+    private void OnWillRenderObject()
+    {
+        if (ApplicationStaticData.IsSuperUser())
+        {
+            GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, 1));
+        }
+        else {
+            GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, -1));
+        }
+        
+    }
+
 
     IEnumerator SendNewFrame()
     {
@@ -83,6 +101,7 @@ public class VideoStreaming : MonoBehaviour {
         Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
         tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
         tex.Apply();
+        plane.GetComponent<Renderer>().material.mainTexture = tex;
         return tex;
     }
 

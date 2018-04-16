@@ -86,7 +86,7 @@ public class TextureEditor : Editor
     void DrawInvert()
     {
         Fold("Invert", ref invertFolded_, () => {
-            texture.invertX = EditorGUILayout.Toggle("Invert X", invertX_.boolValue);
+            texture.invertX = true;
             texture.invertY = EditorGUILayout.Toggle("Invert Y", invertY_.boolValue);
         });
     }
