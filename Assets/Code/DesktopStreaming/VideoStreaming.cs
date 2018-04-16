@@ -101,7 +101,6 @@ public class VideoStreaming : MonoBehaviour {
         Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
         tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
         tex.Apply();
-        plane.GetComponent<Renderer>().material.mainTexture = tex;
         return tex;
     }
 

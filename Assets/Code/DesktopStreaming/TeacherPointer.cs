@@ -99,7 +99,7 @@ public class TeacherPointer : MonoBehaviour {
     void CalculateMousePosition(out int x, out int y)
     {
       //  Debug.Log(Screen.currentResolution);
-        x = (int)(hit.textureCoord.x * Screen.currentResolution.width);
+        x = (int)((1-hit.textureCoord.x) * Screen.currentResolution.width);
         y = (int)(hit.textureCoord.y * Screen.currentResolution.height);
     }
 

@@ -45,8 +45,8 @@ public class firebaseManager : MonoBehaviour {
     { 
 
                 StorageReference fileRef = rivers_ref.Child("0.jpg");
-
-                const long maxAllowedSize = 1 * 1024 * 1024;
+        Debug.Log(fileRef.Path);
+                const long maxAllowedSize = 1024 * 1024 * 1024;
                 fileRef.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task2) => {
                     if (task2.IsFaulted || task2.IsCanceled)
                     {
