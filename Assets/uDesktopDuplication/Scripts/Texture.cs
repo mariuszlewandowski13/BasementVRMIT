@@ -31,7 +31,7 @@ public class Texture : MonoBehaviour
         set { monitor = Manager.GetMonitor(value); }
     }
 
-    [SerializeField] bool invertX_ = true;
+    [SerializeField] bool invertX_ = false;
     public bool invertX
     {
         get 

@@ -55,14 +55,18 @@ public class VideoStreaming : MonoBehaviour {
 
 
     void Update () {
-        if (ApplicationStaticData.IsSuperUser())
+        if (PhotonNetwork.inRoom)
         {
-            SendFrame();
+            if (ApplicationStaticData.IsSuperUser())
+            {
+                SendFrame();
+            }
+            else
+            {
+                LoadFrame();
+            }
         }
-        else if (frameReady)
-        {
-            LoadFrame();
-        }
+       
        
 	}
 
@@ -82,7 +86,7 @@ public class VideoStreaming : MonoBehaviour {
             GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, 1));
         }
         else {
-            GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(1, -1));
+            GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         }
         
     }
@@ -106,6 +110,7 @@ public class VideoStreaming : MonoBehaviour {
 
     private void LoadFrame()
     {
+       
         if (frameReady)
         {
             LoadBytesToTexture();

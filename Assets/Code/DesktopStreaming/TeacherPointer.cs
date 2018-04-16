@@ -81,13 +81,14 @@ public class TeacherPointer : MonoBehaviour {
     {
  if (OVRInput.GetDown(OVRInput.Button.One, controller) || OVRInput.GetUp(OVRInput.Button.One, controller))
         {
-            int x = 0;
-            int y = 0;
-            CalculateMousePosition(out x, out y);
-            SetCursorPos(x, y);
+           
 
             if (OVRInput.GetDown(OVRInput.Button.One, controller))
             {
+                int x = 0;
+                int y = 0;
+                CalculateMousePosition(out x, out y);
+                SetCursorPos(x, y);
                 MouseClickDown();
             } else if (OVRInput.GetUp(OVRInput.Button.One, controller))
             {
