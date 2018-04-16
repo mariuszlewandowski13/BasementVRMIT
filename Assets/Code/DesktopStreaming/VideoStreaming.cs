@@ -6,32 +6,22 @@ using System;
 using System.Runtime.InteropServices;
 
 public class VideoStreaming : MonoBehaviour {
-    public GameObject rendObj;
 
-    private uDesktopDuplication.Texture uddTexture;
+    public RenderTexture m_Display;
+    public firebaseManager fire;
 
-    const int width = 300;
-    const int height = 200;
-
-    Color32[] colors;
-
-    byte[] textureBytes;
-
-    private bool streaming;
-
-    private int fileCounter = 0;
+    public byte[] textureBytes;
+    public bool frameReady;
 
     private int resolutionWidth;
     private int resolutionHeight;
 
-    private bool frameReady;
-    private bool frameReadyToSend;
+    
     private string lastFrameURL;
 
-    private IntPtr texPointer;
     private Texture2D tex;
 
-    private float lastSendingTime = 0.0f;
+    public bool streaming;
 
     private void Awake()
     {
@@ -41,18 +31,13 @@ public class VideoStreaming : MonoBehaviour {
             tex = new Texture2D(2, 2);
             GetComponent<Renderer>().material.mainTexture = tex;
         }
-       
-
     }
 
     private void Start()
     {
         if (ApplicationStaticData.IsSuperUser())
         {
-            uddTexture = GetComponent<uDesktopDuplication.Texture>();
             InitResolution();
-            tex = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.ARGB32, false);
-            colors = new Color32[resolutionWidth * resolutionHeight];
         }
     }
 
@@ -61,7 +46,6 @@ public class VideoStreaming : MonoBehaviour {
         resolutionWidth = Screen.currentResolution.width-1;
         resolutionHeight = Screen.currentResolution.height -1;
     }
-
 
 
     void Update () {
@@ -78,72 +62,44 @@ public class VideoStreaming : MonoBehaviour {
 
     void SendFrame()
     {
-        if (frameReadyToSend)
-        {
-            ProcessTextureBytes();
-        }
-        else if (!streaming)
+        if (!streaming)
         {
             streaming = true;
-            //Thread th = new Thread(SendNewTexture);
-            //th.Start();
-            SendNewTexture();
+            StartCoroutine(SendNewFrame());
         }
     }
 
-    void SendNewTexture()
+
+    IEnumerator SendNewFrame()
     {
-        GetNewFrame();
-        if (!frameReadyToSend)
-        {
-            streaming = false;
-        }
+        yield return new WaitForEndOfFrame();
+        RenderTexture.active = m_Display;
+        fire.upload(toTexture2D(m_Display).EncodeToJPG());
     }
 
-    void ProcessTextureBytes()
+    Texture2D toTexture2D(RenderTexture rTex)
     {
-        
-        SendTexture();
-        frameReadyToSend = false;
-        streaming = false;
-
+        RenderTexture.active = rTex;
+        Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
+        tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+        tex.Apply();
+        return tex;
     }
 
     private void LoadFrame()
     {
-        LoadBytesToTexture();
-    }
-
-
-
-    private void GetNewFrame()
-    {
-        uDesktopDuplication.Manager.primary.useGetPixels = true;
-        var monitor = uddTexture.monitor;
-            if (!monitor.hasBeenUpdated) return;
-
-            if (monitor.GetPixels(colors, 0, 0, resolutionWidth, resolutionHeight))
-            {
-            textureBytes = Color32ArrayToByteArray(colors);
-            frameReadyToSend = true;
+        if (frameReady)
+        {
+            LoadBytesToTexture();
         }
+        else if (!streaming)
+        {
+            streaming = true;
+            fire.download();
+        }
+        
     }
 
-
-    //void GetFrame()
-    //{
-    //    if (frameReady)
-    //    {
-    //        LoadBytesToTexture();
-    //    }
-    //    else if (!streaming)
-    //    {
-    //        streaming = true;
-    //        Thread th = new Thread(DownloadNewFrame);
-    //        th.Start();
-    //        DownloadNewFrame();
-    //    }
-    //}
 
     private void LoadBytesToTexture()
     {
@@ -154,56 +110,6 @@ public class VideoStreaming : MonoBehaviour {
         tex.LoadImage(textureBytes);
         tex.Apply();
         frameReady = false;
-    }
-
-    [PunRPC]
-    public void LoadNewTexture(byte [] tex)
-    {
-        if (!frameReady)
-        {
-            textureBytes = tex;
-            frameReady = true;
-        }
-        
-    }
-
-    public void SendTexture()
-    {
-
-        if (lastSendingTime + 0.5f < Time.time)
-        {
-            lastSendingTime = Time.time;
-            if (PhotonNetwork.inRoom)
-            {
-                Debug.Log(lastSendingTime);
-              //  GetComponent<PhotonView>().RPC("LoadNewTexture", PhotonTargets.Others, tex.GetRawTextureData());
-            }
-        }
-    }
-
-    private static byte[] Color32ArrayToByteArray(Color32[] colors)
-    {
-        if (colors == null || colors.Length == 0)
-            return null;
-
-        int lengthOfColor32 = Marshal.SizeOf(typeof(Color32));
-        int length = lengthOfColor32 * colors.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
     }
 
 }

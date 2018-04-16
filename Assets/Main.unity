@@ -236,8 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d008c186fb5dc5f488e7f33ef30ea549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rendObj: {fileID: 1849343695}
-  texture: {fileID: 0}
+  m_Display: {fileID: 8400000, guid: 3cd9e34c4a9d0984aa18a529d03f504f, type: 2}
+  fire: {fileID: 1411829883}
+  streaming: 0
 --- !u!114 &668090889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -627,6 +628,48 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1411829882
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1411829884}
+  - component: {fileID: 1411829883}
+  m_Layer: 0
+  m_Name: FirebaseManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1411829883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1411829882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b1c58f9c2229c141b1ea83b5d636571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uploading: 0
+  streamingScript: {fileID: 668090884}
+--- !u!4 &1411829884
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1411829882}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.50277287, y: 1.2623785, z: 1.4656308}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1512034972
 Prefab:
