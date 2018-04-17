@@ -5,11 +5,8 @@ using System.IO;
 
 public class LoadGameScript : MonoBehaviour {
 
+    public GameObject door;
 
-    private void Awake()
-    {
-        LoadFromFile();
-    }
 
     private void LoadFromFile()
     {
@@ -20,10 +17,9 @@ public class LoadGameScript : MonoBehaviour {
 
     private void Start()
     {
-        // GetComponent<ConnectAndJoinRandom>().Connect(false);
+        LoadFromFile();
+        door.GetComponent<DoorOpenScript>().roomName = ApplicationStaticData.className;
+
     }
 
-    private void Update()
-    {
-    }
 }

@@ -71,4 +71,5 @@ MonoBehaviour:
   - ClickUp
   - MouseClickDown
   - SetCursor
+  - ShowLesson
   DisableAutoOpenWizard: 1

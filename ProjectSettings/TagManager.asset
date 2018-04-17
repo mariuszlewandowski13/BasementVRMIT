@@ -11,6 +11,8 @@ TagManager:
   - sushi
   - maki
   - board2
+  - door
+  - background
   layers:
   - Default
   - TransparentFX

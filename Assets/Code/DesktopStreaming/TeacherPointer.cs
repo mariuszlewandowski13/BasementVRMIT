@@ -28,7 +28,7 @@ public class TeacherPointer : MonoBehaviour {
 
     private bool active;
 
-    private List<string>  boardTacceptedTags = new List<string> { "board" ,"board2", "keyboardBtn" };
+    private List<string>  boardTacceptedTags = new List<string> { "board" ,"board2", "keyboardBtn", "background" };
 
     public OVRInput.Controller controller;
 
@@ -63,7 +63,11 @@ public class TeacherPointer : MonoBehaviour {
             else if((hit.transform.tag == boardTacceptedTags[2]) && hit.transform.GetComponent<IClickable>() != null ){
                 PointerOn();
                 HandleClickDown(hit.transform);
-            } 
+            }
+            else if ((hit.transform.tag == boardTacceptedTags[3]))
+            {
+                PointerOn();
+            }
         }
         else if (active)
         {

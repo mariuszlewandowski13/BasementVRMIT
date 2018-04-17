@@ -53,8 +53,20 @@ public class DoorOpenScript : MonoBehaviour {
         {
             if (PhotonNetwork.inRoom)
             {
+               
                 PhotonNetwork.Disconnect();
             }
+
+            if (GameObject.Find("Desktop") != null)
+            {
+                GameObject.Find("Desktop").SetActive(false);
+            }
+
+            if (GameObject.Find("FirebaseManager") != null)
+            {
+                GameObject.Find("FirebaseManager").SetActive(false);
+            }
+
             SetSceneToLoad();
         } 
     }
@@ -82,7 +94,8 @@ public class DoorOpenScript : MonoBehaviour {
         }
 
         if (loadScene && !PhotonNetwork.inRoom)
-        {            
+        {
+           
             loadScene = false;
             SceneManager.LoadScene(sceneName);
         }
@@ -134,6 +147,19 @@ public class DoorOpenScript : MonoBehaviour {
         RestoreChildrenColor();
         colorActiveSet = false;
         active = false;
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (GameObject.Find("Desktop") != null)
+        {
+            GameObject.Find("Desktop").SetActive(false);
+        }
+
+        if (GameObject.Find("FirebaseManager") != null)
+        {
+            GameObject.Find("FirebaseManager").SetActive(false);
+        }
     }
 
     #endregion

@@ -1,31 +1,82 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
+using System.Runtime.InteropServices;
+using System;
 
-public class LoadSceneScript : MonoBehaviour {
+public class LoadSceneScript : MonoBehaviour
+{
 
-  
+    public GameObject lessonTeleport;
+
+    public GameObject[] teacherPointers;
+
+    public GameObject keyboard;
+
+    public VideoStreaming videoStreaming;
+
+    public GameObject player;
 
     private void Awake()
     {
-        LoadFromFile();
+        Application.runInBackground = true;
+        ApplicationStaticData.roomToConnectName = ApplicationStaticData.className;
+        videoStreaming.owner = ApplicationStaticData.IsSuperUser();
     }
 
-    private void LoadFromFile()
+    void Start()
     {
-        string[] filelines = File.ReadAllLines("../user_data");
-        ApplicationStaticData.userName = filelines[0] + " " + filelines[1];
-         
+
+        if (ApplicationStaticData.userType == UserType.student)
+        {
+            DisablePointers();
+        }
+
+        keyboard.SetActive(false);
+
+        GetComponent<ConnectAndJoinRandom>().Connect(true);
+
+        lessonTeleport.GetComponent<DoorOpenScript>().roomName = ApplicationStaticData.userName + "_ROOM";
+        SetPlayerPosition();
     }
 
-    private void Start()
+  
+
+    private void SetPlayerPosition()
     {
-       // GetComponent<ConnectAndJoinRandom>().Connect(false);
+        if (!ApplicationStaticData.IsSuperUser())
+        {
+            player.transform.position = RandomNewPosition();
+        }
+    }
+
+    private Vector3 RandomNewPosition()
+    {
+        float x = UnityEngine.Random.Range(-4.5f, 4.5f);
+        float z = UnityEngine.Random.Range(2.0f, 5.0f);
+        return new Vector3(x, 0.0f, z);
+    }
+
+    private void DisablePointers()
+    {
+        foreach (GameObject pointer in teacherPointers)
+        {
+            pointer.SetActive(false);
+        }
     }
 
     private void Update()
     {
+        if (ApplicationStaticData.IsSuperUser() &&  OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch) && OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            GetComponent<PhotonView>().RPC("ShowLesson", PhotonTargets.Others);
+        }
+    }
+
+    [PunRPC]
+    private void ShowLesson()
+    {
+        lessonTeleport.SetActive(true);
     }
 
 

@@ -26,7 +26,7 @@ public class VideoStreaming : MonoBehaviour {
 
     private Texture2D tex;
 
-    public bool streaming;
+    public static bool streaming;
 
     [DllImport("user32")]
     public static extern int SetCursorPos(int x, int y);
@@ -59,8 +59,6 @@ public class VideoStreaming : MonoBehaviour {
 
 
     void Update () {
-        if (PhotonNetwork.inRoom)
-        {
             if (owner)
             {
                 SendFrame();
@@ -69,9 +67,6 @@ public class VideoStreaming : MonoBehaviour {
             {
                 LoadFrame();
             }
-        }
-       
-       
 	}
 
     void SendFrame()
@@ -79,7 +74,7 @@ public class VideoStreaming : MonoBehaviour {
         if (!streaming)
         {
             streaming = true;
-            StartCoroutine(SendNewFrame());
+            SendNewFrame();
         }
     }
 
@@ -96,10 +91,9 @@ public class VideoStreaming : MonoBehaviour {
     }
 
 
-    IEnumerator SendNewFrame()
+    void SendNewFrame()
     {
 
-        yield return new WaitForEndOfFrame();
         RenderTexture.active = m_Display;
         if (!firebaseManager.uploading)
         {
@@ -122,12 +116,11 @@ public class VideoStreaming : MonoBehaviour {
 
     private void LoadFrame()
     {
-       
         if (frameReady)
         {
             LoadBytesToTexture();
         }
-        else if (!streaming)
+        else if (!streaming && !firebaseManager.uploading)
         {
             streaming = true;
             fire.download(filename);

@@ -37,14 +37,14 @@ public class firebaseManager : MonoBehaviour {
             }
 
             uploading = false;
-            streamingScript.streaming = false;
+            VideoStreaming.streaming = false;
         });
     }
 
     public void download(string filename)
-    { 
-        
-                StorageReference fileRef = rivers_ref.Child(filename);
+    {
+        uploading = true;
+        StorageReference fileRef = rivers_ref.Child(filename);
         
         Debug.Log(fileRef.Path);
                 const long maxAllowedSize = 1024 * 1024 * 1024;
@@ -60,9 +60,9 @@ public class firebaseManager : MonoBehaviour {
                         streamingScript.frameReady = true;
                         Debug.Log("Finished downloading file 0.jpg!");
                     }
-                    
+                    uploading = false;
 
-        });
+                });
 
     }
     

@@ -5,15 +5,11 @@ using UnityEngine;
 public class Load11Scene : MonoBehaviour {
 
     public GameObject keyboard;
-
-    public VideoStreaming videoStreamingStudent;
     public VideoStreaming videoStreamingTeacher;
-
-    // Use this for initialization
+    
     void Awake () {
         Application.runInBackground = true;
-        videoStreamingTeacher.owner = ApplicationStaticData.IsSuperUser();
-        videoStreamingStudent.owner = !ApplicationStaticData.IsSuperUser(); 
+        videoStreamingTeacher.owner = !ApplicationStaticData.IsSuperUser();
     }
 
     private void Start()

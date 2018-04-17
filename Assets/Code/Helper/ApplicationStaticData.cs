@@ -14,7 +14,9 @@ public static class ApplicationStaticData {
 
     #region Public Properties
 
-    static public string className = "class1";
+    static public bool lessonDone;
+
+    static public string className = "class2";
 
     static private string _roomToConnectName = "";
     static public string roomToConnectName
