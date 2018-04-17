@@ -5,7 +5,7 @@ using System.Collections;
 
 #endregion
 
-public class PositionBarScript : MonoBehaviour {
+public class PositionBarScript : MonoBehaviour, IClickable {
 
     #region Private Properties
 
@@ -19,151 +19,96 @@ public class PositionBarScript : MonoBehaviour {
 
     private Vector3 controllerPrevPosition;
 
-    //private float controllerXPreviousPosition;
-    //private float controllerZPreviousPosition;
-    #endregion
-
-    #region Public Properties
-
-    public GameObject rotationCenter;
-
+    private bool moving;
+    private GameObject ActualMovingController;
 
     #endregion
+
+
 
 
     #region Methods
 
     void Start()
     {
-        GetComponent<ObjectInteractionScript>().ControllerCollision += ControllerCollision;
         toolbar = transform.parent.parent.gameObject;
     }
 
-    void Update()
-    {
-        //if (active && GetComponent<HighlightingSystem.Highlighter>() != null)
-        //{
-        //    GetComponent<HighlightingSystem.Highlighter>().SeeThroughOff();
-        //    GetComponent<HighlightingSystem.Highlighter>().On();
-        //}
-    }
 
-    private void ControllerCollision(GameObject gameObj, bool isEnter)
+    private void Update()
     {
-        if (isEnter && !active)
-        {
-            gameObj.GetComponent<ControlObjects>().TriggerDown += OnTriggerDown;
-            gameObj.GetComponent<ControlObjects>().TriggerUp += OnTriggerUp;
-            active = true;
-        }
-        else if (!isEnter && !GetComponent<ObjectInteractionScript>().GetIsSelected() && active)
-        {
-            gameObj.GetComponent<ControlObjects>().TriggerDown -= OnTriggerDown;
-            gameObj.GetComponent<ControlObjects>().TriggerUp -= OnTriggerUp;
-            active = false;
-        }
+        OnControllerMove(ActualMovingController);
     }
 
 
     private void OnControllerMove(GameObject controller)
     {
-        float controllerYPosition = controller.transform.position.y;
+        if (moving)
+        {
+            float controllerYPosition = controller.transform.position.y;
 
 
-        float shiftY = controllerYPreviousPosition - controllerYPosition;
+            float shiftY = controllerYPreviousPosition - controllerYPosition;
 
 
-        float toolbarYPosition = toolbar.GetComponent<ToolbarMovementScript>().positionYOffset;
+            float toolbarYPosition = toolbar.GetComponent<ToolbarMovementScript>().positionYOffset;
 
-        if (toolbarYPosition - shiftY >= minYPosition) toolbar.GetComponent<ToolbarMovementScript>().positionYOffset -= shiftY;
+            if (toolbarYPosition - shiftY >= minYPosition) toolbar.GetComponent<ToolbarMovementScript>().positionYOffset -= shiftY;
 
-        controllerYPreviousPosition = controllerYPosition;
-
-
-        //rotation
-        Vector3 controllerPos = controller.transform.position;
-
-        Vector3 from = controllerPrevPosition - toolbar.transform.position;
-        Vector3 to = controllerPos - toolbar.transform.position;
-
-        
-
-        from.y = 0.0f;
-        to.y = 0.0f;
+            controllerYPreviousPosition = controllerYPosition;
 
 
-        
+            //rotation
+            Vector3 controllerPos = controller.transform.position;
+
+            Vector3 from = controllerPrevPosition - toolbar.transform.position;
+            Vector3 to = controllerPos - toolbar.transform.position;
 
 
 
-
-
-        float angle = Vector3.Angle(from, to) ;
-
-       Vector3 cross = Vector3.Cross(from, to);
-        if (cross.y < 0) angle = -angle;
+            from.y = 0.0f;
+            to.y = 0.0f;
 
 
 
-        Vector3 toolbarRot = toolbar.transform.rotation.eulerAngles;
-        toolbarRot.y += angle;
-        toolbar.transform.rotation = Quaternion.Euler(toolbarRot);
+            float angle = Vector3.Angle(from, to);
 
-
-        controllerPrevPosition = controllerPos;
-        //UpdateRotationCenterPosition();
-
-        //toolbar.transform.parent = rotationCenter.transform;
+            Vector3 cross = Vector3.Cross(from, to);
+            if (cross.y < 0) angle = -angle;
 
 
 
-
-        //toolbar.transform.parent = prevParent.transform;
-
-        //toolbar.transform.parent = prevParent.transform;
-        //rotationCenter.transform.position = Camera.main.transform.position;
-        //toolbar.transform.parent = rotationCenter.transform;
+            Vector3 toolbarRot = toolbar.transform.rotation.eulerAngles;
+            toolbarRot.y += angle;
+            toolbar.transform.rotation = Quaternion.Euler(toolbarRot);
 
 
-
-        //Vector3 newRot = Quaternion.LookRotation(controller.transform.forward, Vector3.up).eulerAngles;
-        //newRot.x = 0.0f;
-
-
-        //rotationCenter.transform.rotation = Quaternion.Euler(newRot.x, newRot.y, newRot.z);
-
+            controllerPrevPosition = controllerPos;
+        }
     }
 
-
-
-    private void OnTriggerDown(GameObject controller)
+    public void ClickDown(GameObject controller)
     {
-        GetComponent<ObjectInteractionScript>().SetIsSelected(true);
-        controller.GetComponent<ControlObjects>().ControllerMove += OnControllerMove;
+        if (!moving)
+        {
+            controllerYPreviousPosition = controller.transform.position.y;
+            controllerPrevPosition = controller.transform.position;
 
-        controllerYPreviousPosition = controller.transform.position.y;
-        controllerPrevPosition = controller.transform.position;
-
-        //UpdateRotationCenterPosition();
+            ActualMovingController = controller;
+            moving = true;
+        }
 
     }
 
-
-
-    private void OnTriggerUp(GameObject controller)
+    public void ClickUp(GameObject controller)
     {
-        GetComponent<ObjectInteractionScript>().SetIsSelected(false);
-        controller.GetComponent<ControlObjects>().ControllerMove -= OnControllerMove;
+        if (moving)
+        {
+            moving = false;
+            ActualMovingController = null;
+        }
     }
 
-    //private void UpdateRotationCenterPosition()
-    //{
-    //    Vector3 position = cameraObject.transform.position;
-
-    //    position.y = toolbar.transform.position.y;
-
-    //    rotationCenter.transform.position = position;
-    //}
 
     #endregion
 }

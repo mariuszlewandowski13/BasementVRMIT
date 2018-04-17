@@ -1,14 +1,14 @@
 ﻿#region Usings
 
 using UnityEngine;
+using WindowsInput;
 
 #endregion
 
-public class LetterScript : MonoBehaviour {
+public class LetterScript : MonoBehaviour, IClickable {
 
     #region Public Properties
-    public string character;
-    public KeyCode keyCode;
+    public WindowsInput.Native.VirtualKeyCode  keyCode;
     #endregion
 
     #region Private Properties
@@ -27,6 +27,10 @@ public class LetterScript : MonoBehaviour {
             return _renderer;
         }
     }
+
+    private float clickDuration = 0.1f;
+    private bool clicking;
+    private float lastClickTime;
     #endregion
 
     #region Methods
@@ -41,22 +45,18 @@ public class LetterScript : MonoBehaviour {
         EndAnimate();
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void ClickDown(GameObject controller)
     {
-        if (collision.GetComponent<TextControllerHead>() != null)
-        {
-            if (character != "done")
-            {
-                StartAnimate();
-            }
-            
-            transform.parent.GetComponent<KeyboardScript>().AddLetter(character, keyCode);
-        }
+        StartAnimate();
+        transform.parent.GetComponent<KeyboardScript>().AddLetter(keyCode);
     }
 
-    private void OnTriggerExit(Collider collision)
+    public void ClickUp(GameObject controller)
+    { }
+
+    private void Update()
     {
-        if (collision.GetComponent<TextControllerHead>() != null)
+        if (clicking && (lastClickTime + clickDuration) < Time.time)
         {
             EndAnimate();
         }
@@ -64,11 +64,14 @@ public class LetterScript : MonoBehaviour {
 
     private void StartAnimate()
     {
+        clicking = true;
+        lastClickTime = Time.time;
         renderer2.material.SetColor("_EmissionColor", lightColor);
     }
 
     private void EndAnimate()
     {
+        clicking = false;
         renderer2.material.SetColor("_EmissionColor", darkColor);
     }
 

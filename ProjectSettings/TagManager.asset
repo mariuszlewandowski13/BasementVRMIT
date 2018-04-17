@@ -7,6 +7,7 @@ TagManager:
   - Beam
   - board
   - floor
+  - keyboardBtn
   layers:
   - Default
   - TransparentFX

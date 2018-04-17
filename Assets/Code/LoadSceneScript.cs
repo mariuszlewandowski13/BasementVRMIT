@@ -8,10 +8,17 @@ public class LoadSceneScript : MonoBehaviour {
 
     public GameObject[] teacherPointers;
 
+    public GameObject keyboard;
+
+    public VideoStreaming videoStreaming;
+
     private void Awake()
     {
         Application.runInBackground = true;
-      
+        ApplicationStaticData.userName = "";
+        ApplicationStaticData.userRoom = ApplicationStaticData.userName + "_ROOM";
+        ApplicationStaticData.roomToConnectName = ApplicationStaticData.className;
+        videoStreaming.owner = ApplicationStaticData.IsSuperUser();
     }
 
     void Start () {
@@ -20,6 +27,8 @@ public class LoadSceneScript : MonoBehaviour {
         {
             DisablePointers();
         }
+
+        keyboard.SetActive(false);
 
         GetComponent<ConnectAndJoinRandom>().Connect(true);
     }

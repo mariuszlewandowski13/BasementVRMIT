@@ -12,27 +12,13 @@ public class TeacherPointer : MonoBehaviour {
 
     private bool active;
 
-    private string acceptedTag = "board";
+    private List<string>  boardTacceptedTags = new List<string> { "board" ,"board2", "keyboardBtn" };
 
     public OVRInput.Controller controller;
 
-    [DllImport("user32")]
-    public static extern int SetCursorPos(int x, int y);
 
-    [DllImport("user32.dll")]
-    static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo);
+    private Transform lastClickedObject;
 
-    public enum MouseEventFlags
-    {
-        LEFTDOWN = 0x00000002,
-        LEFTUP = 0x00000004,
-        MIDDLEDOWN = 0x00000020,
-        MIDDLEUP = 0x00000040,
-        MOVE = 0x00000001,
-        ABSOLUTE = 0x00008000,
-        RIGHTDOWN = 0x00000008,
-        RIGHTUP = 0x00000010
-    }
 
     private void Start()
     {
@@ -43,16 +29,57 @@ public class TeacherPointer : MonoBehaviour {
         Ray ray =  new Ray(transform.position, transform.forward);
         Physics.Raycast(ray, out hit);
 
-        if (hit.transform != null && hit.transform.tag == acceptedTag)
+        if (hit.transform != null)
         {
-            PointerOn();
-            HandlePointerClick();
+            if ((ApplicationStaticData.IsSuperUser() && hit.transform.tag == boardTacceptedTags[0]) || hit.transform.tag == boardTacceptedTags[1])
+            {
+                HandleBoardPointerClick(hit.transform);
+                PointerOn();
+            }
+            else if((hit.transform.tag == boardTacceptedTags[2]) && hit.transform.GetComponent<IClickable>() != null ){
+                PointerOn();
+                HandleClickDown(hit.transform);
+            } 
         }
         else if (active)
         {
             PointerOff();
         }
+
         HandleMinimizing();
+
+        HandleClickUp();
+
+        HandleKeyboardOnOff();
+
+
+
+    }
+
+    private void HandleKeyboardOnOff()
+    {
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, controller) && (ApplicationStaticData.IsSuperUser() || ApplicationStaticData.roomToConnectName == "session11"))
+        {
+            KeyboardScript.instance.gameObject.SetActive(!KeyboardScript.instance.gameObject.activeSelf);
+        }
+    }
+
+    private void HandleClickUp()
+    {
+         if (lastClickedObject != null && OVRInput.GetUp(OVRInput.Button.One, controller))
+        {
+            lastClickedObject.GetComponent<IClickable>().ClickUp(gameObject);
+            lastClickedObject = null;
+        }
+    }
+
+    private void HandleClickDown(Transform tr)
+    {
+        if (OVRInput.GetDown(OVRInput.Button.One, controller))
+        {
+            tr.GetComponent<IClickable>().ClickDown(gameObject);
+            lastClickedObject = tr;
+        }
     }
 
     private void HandleMinimizing()
@@ -77,22 +104,22 @@ public class TeacherPointer : MonoBehaviour {
         active = false;
     }
 
-    void HandlePointerClick()
+    void HandleBoardPointerClick(Transform tr)
     {
- if (OVRInput.GetDown(OVRInput.Button.One, controller) || OVRInput.GetUp(OVRInput.Button.One, controller))
+     if (OVRInput.GetDown(OVRInput.Button.One, controller) || OVRInput.GetUp(OVRInput.Button.One, controller))
         {
-           
 
             if (OVRInput.GetDown(OVRInput.Button.One, controller))
             {
                 int x = 0;
                 int y = 0;
                 CalculateMousePosition(out x, out y);
-                SetCursorPos(x, y);
-                MouseClickDown();
+                tr.GetComponent<VideoStreaming>().HandleMouseClick(x, y);
+
+                tr.GetComponent<VideoStreaming>().MouseClickDown();
             } else if (OVRInput.GetUp(OVRInput.Button.One, controller))
             {
-                MouseClickUp();
+                tr.GetComponent<VideoStreaming>().MouseClickUp();
             }
         }
     }
@@ -104,16 +131,7 @@ public class TeacherPointer : MonoBehaviour {
         y = (int)(hit.textureCoord.y * Screen.currentResolution.height);
     }
 
-    void MouseClickDown()
-    {
-        mouse_event((uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, 0);
-    }
 
-    void MouseClickUp()
-    {
-        mouse_event((uint)MouseEventFlags.LEFTUP, 0, 0, 0, 0);
-        
-    }
 
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);

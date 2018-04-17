@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "1037850346775",
-    "firebase_url": "https://cloudstories-7de0a.firebaseio.com",
-    "project_id": "cloudstories-7de0a",
-    "storage_bucket": "cloudstories-7de0a.appspot.com"
+    "project_number": "422612472242",
+    "firebase_url": "https://bvr-mit.firebaseio.com",
+    "project_id": "bvr-mit",
+    "storage_bucket": "bvr-mit.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037850346775:android:544b35bef5ee0f9d",
+        "mobilesdk_app_id": "1:422612472242:android:535a47e5bdfe408d",
         "android_client_info": {
-          "package_name": "com.MixedReality.BasementVR"
+          "package_name": "com.mrc.bvr"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1037850346775-2sfd932b5cr7tec7c1a32gqovi50cq55.apps.googleusercontent.com",
+          "client_id": "422612472242-bcp15gqmmulm3655r365ajvv8vk6qerl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDm81gMcL2qLyWVr5hoLIzsIY6rNrpwBII"
+          "current_key": "AIzaSyD4glDQ26eda4KtXsuBs3nluGr7lb6y0uI"
         }
       ],
       "services": {

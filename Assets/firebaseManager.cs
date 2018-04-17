@@ -18,15 +18,15 @@ public class firebaseManager : MonoBehaviour {
     void Start()
     {
         storage = FirebaseStorage.DefaultInstance;
-        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://cloudstories-7de0a.appspot.com/mit_upload");
+        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://bvr-mit.appspot.com/mit_upload");
         rivers_ref = storage_ref.Child(ApplicationStaticData.roomToConnectName);
 
     }
 
-    public void upload(byte[] array) {
+    public void upload(byte[] array, string filename) {
         uploading = true;
 
-        rivers_ref.Child("0.jpg").PutBytesAsync(array).ContinueWith((Task<StorageMetadata> task) => {
+        rivers_ref.Child(filename).PutBytesAsync(array).ContinueWith((Task<StorageMetadata> task) => {
             if (task.IsFaulted || task.IsCanceled)
             {
                 Debug.Log(task.Exception.ToString());
@@ -41,10 +41,10 @@ public class firebaseManager : MonoBehaviour {
         });
     }
 
-    public void download()
+    public void download(string filename)
     { 
 
-                StorageReference fileRef = rivers_ref.Child("0.jpg");
+                StorageReference fileRef = rivers_ref.Child(filename);
         Debug.Log(fileRef.Path);
                 const long maxAllowedSize = 1024 * 1024 * 1024;
                 fileRef.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task2) => {

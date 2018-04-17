@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 
 public class VideoStreaming : MonoBehaviour {
 
-    public GameObject plane;
+    public bool owner;
+
+    public string filename = "0.jpg";
 
     public RenderTexture m_Display;
     public firebaseManager fire;
@@ -25,22 +27,37 @@ public class VideoStreaming : MonoBehaviour {
 
     public bool streaming;
 
-    private void Awake()
+    [DllImport("user32")]
+    public static extern int SetCursorPos(int x, int y);
+
+    [DllImport("user32.dll")]
+    static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo);
+
+   
+
+    public enum MouseEventFlags
     {
-        if (!ApplicationStaticData.IsSuperUser())
-        {
-            GetComponent<uDesktopDuplication.Texture>().enabled = false;
-            tex = new Texture2D(2, 2);
-            GetComponent<Renderer>().material.mainTexture = tex;
-        }
+        LEFTDOWN = 0x00000002,
+        LEFTUP = 0x00000004,
+        MIDDLEDOWN = 0x00000020,
+        MIDDLEUP = 0x00000040,
+        MOVE = 0x00000001,
+        ABSOLUTE = 0x00008000,
+        RIGHTDOWN = 0x00000008,
+        RIGHTUP = 0x00000010
     }
+
 
     private void Start()
     {
-        if (ApplicationStaticData.IsSuperUser())
+        if (owner)
         {
             InitResolution();
-            
+        }
+        else {
+            GetComponent<uDesktopDuplication.Texture>().enabled = false;
+            tex = new Texture2D(2, 2);
+            GetComponent<Renderer>().material.mainTexture = tex;
         }
     }
 
@@ -57,7 +74,7 @@ public class VideoStreaming : MonoBehaviour {
     void Update () {
         if (PhotonNetwork.inRoom)
         {
-            if (ApplicationStaticData.IsSuperUser())
+            if (owner)
             {
                 SendFrame();
             }
@@ -81,7 +98,7 @@ public class VideoStreaming : MonoBehaviour {
 
     private void OnWillRenderObject()
     {
-        if (ApplicationStaticData.IsSuperUser())
+        if (owner)
         {
             GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, 1));
         }
@@ -96,7 +113,7 @@ public class VideoStreaming : MonoBehaviour {
     {
         yield return new WaitForEndOfFrame();
         RenderTexture.active = m_Display;
-        fire.upload(toTexture2D(m_Display).EncodeToJPG());
+        fire.upload(toTexture2D(m_Display).EncodeToJPG(), filename);
     }
 
     Texture2D toTexture2D(RenderTexture rTex)
@@ -118,7 +135,7 @@ public class VideoStreaming : MonoBehaviour {
         else if (!streaming)
         {
             streaming = true;
-            fire.download();
+            fire.download(filename);
         }
         
     }
@@ -133,6 +150,70 @@ public class VideoStreaming : MonoBehaviour {
         tex.LoadImage(textureBytes);
         tex.Apply();
         frameReady = false;
+    }
+
+    public void HandleMouseClick(int x, int y)
+    {
+        if (owner)
+        {
+            SetCursor(x, y);
+        }
+        else {
+            if (PhotonNetwork.inRoom)
+            {
+                GetComponent<PhotonView>().RPC("SetCursor", PhotonTargets.Others, x, y);
+            }
+        }
+        
+    }
+
+
+    [PunRPC]
+    private void SetCursor(int x, int y)
+    {
+        SetCursorPos(x, y);
+    }
+
+    private void ClickDown()
+    {
+        mouse_event((uint)MouseEventFlags.LEFTDOWN, 0, 0, 0, 0);
+    }
+
+    [PunRPC]
+    public void MouseClickDown()
+    {
+        if (owner)
+        {
+            ClickDown();
+        }
+        else
+        {
+            if (PhotonNetwork.inRoom)
+            {
+                GetComponent<PhotonView>().RPC("ClickDown", PhotonTargets.Others);
+            }
+        }
+    }
+
+    [PunRPC]
+    private void ClickUp()
+    {
+        mouse_event((uint)MouseEventFlags.LEFTUP, 0, 0, 0, 0);
+    }
+
+    public void MouseClickUp()
+    {
+        if (owner)
+        {
+            ClickUp();
+        }
+        else
+        {
+            if (PhotonNetwork.inRoom)
+            {
+                GetComponent<PhotonView>().RPC("ClickUp", PhotonTargets.Others);
+            }
+        }
     }
 
 }
