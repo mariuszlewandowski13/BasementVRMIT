@@ -953,7 +953,7 @@ internal static class OVRPlugin
 		}
 	}
 
-	public static bool hasVrFocus { get { return OVRP_1_1_0.ovrp_GetAppHasVrFocus() == Bool.True; } }
+    public static bool hasVrFocus { get { return OVRP_1_1_0.ovrp_GetAppHasVrFocus() == Bool.True; } }
 
 	public static bool hasInputFocus
 	{

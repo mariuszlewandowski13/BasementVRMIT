@@ -30,6 +30,8 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     #endregion
 
 
+    public static RoomInfo[] rooms;
+
     #region Methods
 
     //public virtual void Start()
@@ -102,6 +104,14 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if (PhotonNetwork.insideLobby)
+        {
+            rooms = PhotonNetwork.GetRoomList();
+        }
+    }
+
     public virtual void OnJoinedLobby()
     {
         Debug.Log("OnJoinedLobby(). This client is connected and does get a room-list, which gets stored as PhotonNetwork.GetRoomList().");
@@ -117,7 +127,7 @@ public class ConnectAndJoinRandom : Photon.MonoBehaviour
     {
         //CreateWorldScript.UpdateUserCounters();
         //CreateHallScript.UpdateUserCounters();
-        //RoomInfo[] roomsList = PhotonNetwork.GetRoomList();
+        rooms = PhotonNetwork.GetRoomList();
         // Debug.Log(roomsList.Length);
         if (ConnectToRoom)
         {

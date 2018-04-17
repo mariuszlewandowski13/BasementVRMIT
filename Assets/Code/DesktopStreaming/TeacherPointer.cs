@@ -3,6 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
+using System.Drawing;
+
+public enum MouseEventFlags
+{
+    LEFTDOWN = 0x00000002,
+    LEFTUP = 0x00000004,
+    MIDDLEDOWN = 0x00000020,
+    MIDDLEUP = 0x00000040,
+    MOVE = 0x00000001,
+    ABSOLUTE = 0x00008000,
+    RIGHTDOWN = 0x00000008,
+    RIGHTUP = 0x00000010,
+    WM_MOUSEWHEEL = 0x020A,
+    WHEEL_DELTA = 120
+}
+
 
 public class TeacherPointer : MonoBehaviour {
 
@@ -19,6 +35,14 @@ public class TeacherPointer : MonoBehaviour {
 
     private Transform lastClickedObject;
 
+
+    [DllImport("user32.dll")]
+    private static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetActiveWindow();
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, Int32 wParam, ref Point lParam);
 
     private void Start()
     {
@@ -56,6 +80,11 @@ public class TeacherPointer : MonoBehaviour {
 
     }
 
+    private void HandleThumbstickScroll()
+    {
+
+    }
+
     private void HandleKeyboardOnOff()
     {
         if (OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, controller) && (ApplicationStaticData.IsSuperUser() || ApplicationStaticData.roomToConnectName == "session11"))
@@ -84,7 +113,7 @@ public class TeacherPointer : MonoBehaviour {
 
     private void HandleMinimizing()
     {
-        if (ApplicationStaticData.IsSuperUser() &&  OVRInput.GetUp(OVRInput.Button.Two, controller))
+        if ( OVRInput.GetUp(OVRInput.Button.Two, controller))
         {
             OnMinimizeButtonClick();
         }
@@ -111,11 +140,7 @@ public class TeacherPointer : MonoBehaviour {
 
             if (OVRInput.GetDown(OVRInput.Button.One, controller))
             {
-                int x = 0;
-                int y = 0;
-                CalculateMousePosition(out x, out y);
-                tr.GetComponent<VideoStreaming>().HandleMouseClick(x, y);
-
+                tr.GetComponent<VideoStreaming>().HandleMouseClick(hit.textureCoord.x, hit.textureCoord.y);
                 tr.GetComponent<VideoStreaming>().MouseClickDown();
             } else if (OVRInput.GetUp(OVRInput.Button.One, controller))
             {
@@ -124,22 +149,20 @@ public class TeacherPointer : MonoBehaviour {
         }
     }
 
-    void CalculateMousePosition(out int x, out int y)
-    {
-      //  Debug.Log(Screen.currentResolution);
-        x = (int)((1-hit.textureCoord.x) * Screen.currentResolution.width);
-        y = (int)(hit.textureCoord.y * Screen.currentResolution.height);
-    }
 
 
 
-    [DllImport("user32.dll")]
-    private static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
+
+   
 
     public void OnMinimizeButtonClick()
     {
         ShowWindow(GetActiveWindow(), 2);
+    }
+
+
+    private void ScrollWindow(IntPtr hwnd, Point p, int scrolls = -1)
+    {
+        SendMessage(hwnd, (int)MouseEventFlags.WM_MOUSEWHEEL, ((int)MouseEventFlags.WHEEL_DELTA * scrolls) << 16, ref p);
     }
 }

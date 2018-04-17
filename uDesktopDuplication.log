@@ -1,7 +1,7 @@
-[uDD::Log][2018-04-17 02:12:22] Start
-[uDD::Log][2018-04-17 02:12:23] Duplicator::Initialize() => OK.
-[uDD::Log][2018-04-17 02:12:23]     ID    : 0
-[uDD::Log][2018-04-17 02:12:23]     Size  : (3840, 2160)
-[uDD::Log][2018-04-17 02:12:23]     DPI   : (160, 159)
-[uDD::Log][2018-04-17 02:12:23]     Rot   : Landscape
-[uDD::Log][2018-04-17 02:13:04] Stop
+[uDD::Log][2018-04-17 11:38:11] Start
+[uDD::Log][2018-04-17 11:38:11] Duplicator::Initialize() => OK.
+[uDD::Log][2018-04-17 11:38:11]     ID    : 0
+[uDD::Log][2018-04-17 11:38:11]     Size  : (3840, 2160)
+[uDD::Log][2018-04-17 11:38:11]     DPI   : (160, 159)
+[uDD::Log][2018-04-17 11:38:11]     Rot   : Landscape
+[uDD::Log][2018-04-17 11:38:49] Stop

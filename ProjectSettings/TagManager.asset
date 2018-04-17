@@ -8,6 +8,9 @@ TagManager:
   - board
   - floor
   - keyboardBtn
+  - sushi
+  - maki
+  - board2
   layers:
   - Default
   - TransparentFX

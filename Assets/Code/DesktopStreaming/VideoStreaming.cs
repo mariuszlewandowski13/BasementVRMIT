@@ -5,6 +5,7 @@ using System.Threading;
 using System;
 using System.Runtime.InteropServices;
 
+
 public class VideoStreaming : MonoBehaviour {
 
     public bool owner;
@@ -34,20 +35,6 @@ public class VideoStreaming : MonoBehaviour {
     static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, int dwExtraInfo);
 
    
-
-    public enum MouseEventFlags
-    {
-        LEFTDOWN = 0x00000002,
-        LEFTUP = 0x00000004,
-        MIDDLEDOWN = 0x00000020,
-        MIDDLEUP = 0x00000040,
-        MOVE = 0x00000001,
-        ABSOLUTE = 0x00008000,
-        RIGHTDOWN = 0x00000008,
-        RIGHTUP = 0x00000010
-    }
-
-
     private void Start()
     {
         if (owner)
@@ -111,9 +98,17 @@ public class VideoStreaming : MonoBehaviour {
 
     IEnumerator SendNewFrame()
     {
+
         yield return new WaitForEndOfFrame();
         RenderTexture.active = m_Display;
-        fire.upload(toTexture2D(m_Display).EncodeToJPG(), filename);
+        if (!firebaseManager.uploading)
+        {
+            fire.upload(toTexture2D(m_Display).EncodeToJPG(), filename);
+        }
+        else {
+            streaming = false;
+        }
+        
     }
 
     Texture2D toTexture2D(RenderTexture rTex)
@@ -150,18 +145,29 @@ public class VideoStreaming : MonoBehaviour {
         tex.LoadImage(textureBytes);
         tex.Apply();
         frameReady = false;
+        streaming = false;
     }
 
-    public void HandleMouseClick(int x, int y)
+    void CalculateMousePosition(out int x, out int y, float xIn, float yIn)
+    {
+        x = (int)((1 - xIn) * Screen.currentResolution.width);
+        y = (int)(yIn * Screen.currentResolution.height);
+    }
+
+
+    public void HandleMouseClick(float xTex, float yTex)
     {
         if (owner)
         {
+            int x;
+            int y;
+            CalculateMousePosition(out x, out y, xTex, yTex);
             SetCursor(x, y);
         }
         else {
             if (PhotonNetwork.inRoom)
             {
-                GetComponent<PhotonView>().RPC("SetCursor", PhotonTargets.Others, x, y);
+                GetComponent<PhotonView>().RPC("HandleMouseClick", PhotonTargets.Others, xTex, yTex);
             }
         }
         

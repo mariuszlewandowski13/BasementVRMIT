@@ -10,10 +10,14 @@ public class Load11Scene : MonoBehaviour {
     public VideoStreaming videoStreamingTeacher;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
+        Application.runInBackground = true;
         videoStreamingTeacher.owner = ApplicationStaticData.IsSuperUser();
-        videoStreamingStudent.owner = !ApplicationStaticData.IsSuperUser();
+        videoStreamingStudent.owner = !ApplicationStaticData.IsSuperUser(); 
+    }
 
+    private void Start()
+    {
         ApplicationStaticData.roomToConnectName = "session11";
         keyboard.SetActive(false);
         GetComponent<ConnectAndJoinRandom>().Connect(true);

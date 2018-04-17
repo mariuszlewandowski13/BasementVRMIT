@@ -1,44 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Runtime.InteropServices;
-using System;
+using System.IO;
 
 public class LoadSceneScript : MonoBehaviour {
 
-    public GameObject[] teacherPointers;
-
-    public GameObject keyboard;
-
-    public VideoStreaming videoStreaming;
+  
 
     private void Awake()
     {
-        Application.runInBackground = true;
-        ApplicationStaticData.userName = "";
-        ApplicationStaticData.userRoom = ApplicationStaticData.userName + "_ROOM";
-        ApplicationStaticData.roomToConnectName = ApplicationStaticData.className;
-        videoStreaming.owner = ApplicationStaticData.IsSuperUser();
+        LoadFromFile();
     }
 
-    void Start () {
-
-        if (ApplicationStaticData.userType == UserType.student)
-        {
-            DisablePointers();
-        }
-
-        keyboard.SetActive(false);
-
-        GetComponent<ConnectAndJoinRandom>().Connect(true);
-    }
-
-    private void DisablePointers()
+    private void LoadFromFile()
     {
-        foreach (GameObject pointer in teacherPointers)
-        {
-            pointer.SetActive(false);
-        }
+        string[] filelines = File.ReadAllLines("../user_data");
+        ApplicationStaticData.userName = filelines[0] + " " + filelines[1];
+         
+    }
+
+    private void Start()
+    {
+       // GetComponent<ConnectAndJoinRandom>().Connect(false);
+    }
+
+    private void Update()
+    {
     }
 
 
