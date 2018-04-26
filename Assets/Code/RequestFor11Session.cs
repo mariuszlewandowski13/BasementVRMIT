@@ -9,13 +9,25 @@ public class RequestFor11Session : MonoBehaviour {
 
     private bool canGo;
 
-    private List<PhotonPlayer> players = new List<PhotonPlayer>();
+    private  Queue<PhotonPlayer> players;
 
-	void Update () {
+
+
+    private void Start()
+    {
+         players = new Queue<PhotonPlayer>();
+    }
+
+    void Update () {
         if (!requested && !ApplicationStaticData.IsSuperUser() && OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
         {
             requested = true;
             CreateRequest();
+        }
+
+        if (ApplicationStaticData.IsSuperUser() && OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            GetFirstAndGoToSession();
         }
 
         if (canGo && !PhotonNetwork.inRoom)
@@ -50,11 +62,25 @@ public class RequestFor11Session : MonoBehaviour {
 
     private void CreateNewRequestObject(PhotonPlayer player)
     {
-
+        players.Enqueue(player);
+        Highlight();
     }
 
+    private void Highlight()
+    {
+        GetComponent<Renderer>().material.color = Color.red;
+    }
 
-    public void SendReplyAndGoToSession(PhotonPlayer player)
+    public void GetFirstAndGoToSession()
+    {
+        if (players.Count > 0)
+        {
+            SendReplyAndGoToSession(players.Dequeue());
+        }
+        
+    }
+
+    private void SendReplyAndGoToSession(PhotonPlayer player)
     {
         if (PhotonNetwork.inRoom)
         {
@@ -62,10 +88,11 @@ public class RequestFor11Session : MonoBehaviour {
         }
         GoToSession();
     }
-
+    
+    [PunRPC]
     private void GoToSession()
     {
-
+        canGo = true;
     }
 
 }

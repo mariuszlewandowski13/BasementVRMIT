@@ -72,4 +72,6 @@ MonoBehaviour:
   - MouseClickDown
   - SetCursor
   - ShowLesson
+  - GetRequest
+  - GoToSession
   DisableAutoOpenWizard: 1

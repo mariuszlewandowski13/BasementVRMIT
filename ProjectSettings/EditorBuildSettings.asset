@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/privateRoom.unity
     guid: 0a9daa5a80227694585a03312545e0c5
   - enabled: 1
     path: Assets/Main.unity
     guid: c69f79e7d85c7c548a2f300fee1a8856
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scene1-1.unity
     guid: bd75fcd7ee6950644aa6725c50eca380
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/1-Physics/Physics_FINAL.unity
     guid: 92286fa699cc18141ae0c5f712837785
   m_configObjects: {}

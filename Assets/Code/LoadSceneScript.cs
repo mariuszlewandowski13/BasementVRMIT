@@ -6,22 +6,37 @@ using System;
 
 public class LoadSceneScript : MonoBehaviour
 {
-
+    public GameObject studentDesktop;
     public GameObject lessonTeleport;
 
     public GameObject[] teacherPointers;
 
     public GameObject keyboard;
 
-    public VideoStreaming videoStreaming;
 
     public GameObject player;
+
+    public GameObject requestObject;
+
+    public GameObject desktop;
 
     private void Awake()
     {
         Application.runInBackground = true;
         ApplicationStaticData.roomToConnectName = ApplicationStaticData.className;
-        videoStreaming.owner = ApplicationStaticData.IsSuperUser();
+        SetDesktopFeatures();
+    }
+
+    private void SetDesktopFeatures()
+    {
+        if (ApplicationStaticData.IsSuperUser())
+        {
+            studentDesktop.SetActive(false);
+            desktop.GetComponent<VideoStreaming>().owner = true;
+        }
+        else {
+            desktop.SetActive(false);
+        }
     }
 
     void Start()
@@ -30,6 +45,7 @@ public class LoadSceneScript : MonoBehaviour
         if (ApplicationStaticData.userType == UserType.student)
         {
             DisablePointers();
+            requestObject.GetComponent<Renderer>().enabled = false;
         }
 
         keyboard.SetActive(false);
@@ -53,7 +69,7 @@ public class LoadSceneScript : MonoBehaviour
     private Vector3 RandomNewPosition()
     {
         float x = UnityEngine.Random.Range(-4.5f, 4.5f);
-        float z = UnityEngine.Random.Range(2.0f, 5.0f);
+        float z = UnityEngine.Random.Range(2.0f, -3.0f);
         return new Vector3(x, 0.0f, z);
     }
 
